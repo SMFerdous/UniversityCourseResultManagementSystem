@@ -1,0 +1,52 @@
+﻿@model IEnumerable<UniversityCourseResultManagementSystem.Models.EnrollCourse>
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Index</h2>
+
+<p>
+    @Html.ActionLink("Create New", "Create")
+</p>
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.Course.CourseCode)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.RegistrationId)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.EnrollDate)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.GradeName)
+        </th>
+        <th></th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.Course.CourseCode)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.RegistrationId)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.EnrollDate)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.GradeName)
+        </td>
+        <td>
+            @Html.ActionLink("Edit", "Edit", new { id=item.EnrollCourseId }) |
+            @Html.ActionLink("Details", "Details", new { id=item.EnrollCourseId }) |
+            @Html.ActionLink("Delete", "Delete", new { id=item.EnrollCourseId })
+        </td>
+    </tr>
+}
+
+</table>

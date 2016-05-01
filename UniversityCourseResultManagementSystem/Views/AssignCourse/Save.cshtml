@@ -1,0 +1,254 @@
+﻿@model UniversityCourseResultManagementSystem.Models.RoomAllocation
+
+@{
+    ViewBag.Title = "Create";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+<h2>Course Assigning to Teacher </h2>
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-group">
+
+        <div class="col-md-10" style="margin-bottom: 5px;">
+            <label style="width: 150px;text-align: right;padding-right: 5px;font-size: 16px;"> Department</label>
+            <select name="DepartmentId" id="DepartmentId" style="width: 200px;padding: 2px 4px; height: 25px; font-size: 14px;">
+                <option value=0></option>
+                @foreach (var department in ViewBag.departments)
+                {
+                    <option value="@department.DepartmentId">@department.DeptName</option>
+                }
+
+            </select><label id="DeptErrorLabel" style="color: red;"></label>
+        </div>
+    </div>
+
+        <div class="form-group">
+            <div class="col-md-10" style="margin-bottom: 5px;">
+                <label style="width: 150px;text-align: right;padding-right: 5px;font-size: 16px;">Teacher</label>
+                <select name="TeacherId" id="TeacherId" style="width: 200px; padding: 2px 4px; height: 25px; font-size: 14px;">
+                    <option value=0></option>
+
+                </select><label id="TeacherErrorLabel" style="color: red;"></label>
+            </div>
+    </div>
+    
+    <div class="form-group">
+        <div class="col-md-10" style="margin-bottom: 5px;">
+            <label style="width: 150px;text-align: right;padding-right: 5px;font-size: 16px;">Credit to be taken</label>
+            <input id="tCredit" type="text" style="width: 200px; padding: 2px 4px; height: 25px; font-size: 14px;" readonly="" />
+        </div>
+    </div>
+    
+     <div class="form-group">
+         <div class="col-md-10" style="margin-bottom: 5px;">
+             <label style="width: 150px;text-align: right;padding-right: 5px;font-size: 16px;">Remaining credit</label>
+             <input id="rCredit" type="text" style="width: 200px; padding: 2px 4px; height: 25px; font-size: 14px;" readonly="" />
+         </div>
+    </div>
+    
+    <div class="form-group">
+        <div class="col-md-10" style="margin-bottom: 5px;">
+            <label style="width: 150px;text-align: right;padding-right: 5px;font-size: 16px;">Course Code</label>
+            <select name="CourseId" id="CourseId" style="width: 200px; padding: 2px 4px; height: 25px; font-size: 14px;">
+                <option value=0></option>
+
+            </select><label id="CourseErrorLabel" style="color: red;"></label>
+        </div>
+    </div>
+    
+    <div class="form-group">
+        <div class="col-md-10" style="margin-bottom: 5px;">
+            <label style="width: 150px;text-align: right;padding-right: 5px;font-size: 16px;">Course Name</label>
+            <input id="cName" type="text" style="width: 200px; padding: 2px 4px; height: 25px; font-size: 14px;" readonly="" />
+        </div>
+    </div>
+    
+     <div class="form-group">
+         <div class="col-md-10" style="margin-bottom: 5px;">
+             <label style="width: 150px;text-align: right;padding-right: 5px;font-size: 16px;">Credit</label>
+             <input id="cCredit" type="text" style="width: 200px; padding: 2px 4px; height: 25px; font-size: 14px;" readonly="" />
+         </div>
+    </div>
+    
+    <div class="form-group">
+        <div class="col-md-10">
+            <p>
+                <label style="width: 280px;text-align: right;padding-right: 5px;font-size: 16px;"></label>
+                <input type="submit" id="Submit" value="Assign" class="btn btn-default" />
+            </p>
+        </div>
+    </div>
+}
+<div style="clear: both;"></div>
+<script src="~/Scripts/jquery-2.2.0.min.js"></script>
+
+<script>
+    $(document).ready(function() {
+
+        $("#DepartmentId").change(function() {
+            ResetLabel();
+
+            //ResetErrorLabel();
+            var departmentId = $("#DepartmentId").val();
+            var jsnFormatData = { deptId: departmentId };
+            $("#TeacherId").empty();
+            $("#TeacherId").append('<option value=0></option>');
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("GetTeachersByDeptId", "AssignCourse")',
+                contentType: "application/json; charset=utf-8",
+                data: JSON.stringify(jsnFormatData),
+                dataType: "json",
+                success: function(data) {
+
+                    $.each(data, function(key, value) {
+                        $("#TeacherId").append('<option value=' + value.TeacherId + '>' + value.TeacherName + '</option>');
+                    });
+                }
+            });
+
+            $("#CourseId").empty();
+            $("#CourseId").append('<option value=0></option>');
+            jsnFormatData = { deptId: departmentId };
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("GetCoursesByDeptId", "RoomAllocation")',
+                contentType: "application/json; charset=utf-8",
+                data: JSON.stringify(jsnFormatData),
+                dataType: "json",
+                success: function(dataa) {
+
+                    $.each(dataa, function(key1, value1) {
+                        $("#CourseId").append('<option value=' + value1.CourseId + '>' + value1.CourseCode + '</option>');
+                    });
+                }
+            });
+            return false;
+        });
+
+        $("#TeacherId").change(function() {
+            var teacherId = $("#TeacherId").val();
+            var jsnFormatData = { teacherId: teacherId };
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("GetTeachersById", "AssignCourse")',
+                contentType: "application/json; charset=utf-8",
+                data: JSON.stringify(jsnFormatData),
+                dataType: "json",
+                success: function(data) {
+                    //alert(data.TakenCredit + " " + data.RemainingCredit);
+                    $("#tCredit").val(data.TakenCredit);
+                    $("#rCredit").val(data.RemainingCredit);
+                }
+            });
+            if (teacherId === 0) {
+                $("#rCredit").val("");
+                $("#tCredit").val("");
+            }
+            return false;
+        });
+
+        $("#CourseId").change(function() {
+            var courseId = $("#CourseId").val();
+            var jsnFormatData = { courseId: courseId };
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("GetCourseById", "AssignCourse")',
+                contentType: "application/json; charset=utf-8",
+                data: JSON.stringify(jsnFormatData),
+                dataType: "json",
+                success: function(data) {
+                    $("#cName").val(data.CourseName);
+                    $("#cCredit").val(data.Credit);
+                }
+            });
+            if (courseId === 0) {
+                $("#cName").val("");
+                $("#cCredit").val("");
+            }
+            return false;
+        });
+
+        $("#Submit").click(function() {
+            var errorValue = 0;
+            // ResetLabel();
+            var departmentId = $("#DepartmentId").val();
+
+            if (departmentId === 0) {
+                $("#DeptErrorLabel").text("Select One Department!");
+                errorValue = 1;
+            }
+
+            var teacherId = $("#TeacherId").val();
+
+            if (teacherId === 0) {
+                $("#TeacherErrorLabel").text("Select One Teacher!");
+                errorValue = 1;
+            }
+
+            var courseId = $("#CourseId").val();
+            if (courseId === 0) {
+                $("#CourseErrorLabel").text("Select One Course!");
+                errorValue = 1;
+            }
+            if (errorValue === 1) {
+                return false;
+            } else {
+
+                var remCr = $("#rCredit").val() - $("#cCredit").val();
+                var r = false;
+                if (remCr < 0) {
+
+                    r = confirm("The Teacher has alreay too many Credits. Do You assign More...");
+                }
+                if (r === true || remCr > 0) {
+                    //////
+                    var tC = $("#tCredit").val();
+                    
+                    var jsnFormatData = { DepartmentId: departmentId, TeacherId: teacherId, CourseId: courseId, TakenCredit: tC, RemainingCredit: remCr };
+                    $.ajax({
+                        type: "POST",
+                        url: '@Url.Action("SaveAssignCourse", "AssignCourse")',
+                        contentType: "application/json; charset=utf-8",
+                        data: JSON.stringify(jsnFormatData),
+                        dataType: "json",
+                        success: function(data) {
+
+                            if (data === true)
+                                alert("Successfully Assigned");
+                            else {
+                                alert("Course is already Assigned");
+                            }
+                            Reset();
+                        }
+                    });
+
+                } 
+                    return false;
+                }
+                
+            });
+            return false;
+    });
+
+        function Reset() {
+            $("#rCredit").val("");
+            $("#tCredit").val("");
+            $("#CourseId").empty();
+            $("#TeacherId").empty();
+            $("#cName").val("");
+            $("#cCredit").val("");
+            $("#DepartmentId").prop("selectedIndex", 0);
+        }
+
+        function ResetLabel() {
+            $("#DeptErrorLabel").text("");
+            $("#TeacherErrorLabel").text("");
+            $("#CourseErrorLabel").text("");
+        }
+
+</script>

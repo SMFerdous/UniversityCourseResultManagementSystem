@@ -1,0 +1,45 @@
+﻿@model UniversityCourseResultManagementSystem.Models.Course
+
+
+
+
+<h2>Unassign Courses</h2>
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+    <div class="form-group" style="text-align: center">
+    <input type="button" value="Unassign All Courses" id="UnassignCourses" class="btn btn-lg"/>
+        </div>
+}
+<script src="~/Scripts/jquery-2.2.0.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $("#UnassignCourses").click(function () {
+            
+            var r = confirm("Are you sure to unassign all courses?");
+            if (r === true) {
+
+                var jsnFormatData = { name: r};
+                $.ajax({
+                    type: "POST",
+                    url: '@Url.Action("UnassignAllCourses", "Course")',
+                    contentType: "application/json; charset=utf-8",
+                    data: JSON.stringify(jsnFormatData),
+                    dataType: "json",
+                    success: function (data) {
+
+                        if (data === true) {
+                            alert("All courses unassigned successffully!");
+                        } else {
+                            alert("No courses are available to unassgn");
+                        }
+                    }
+                });
+
+            }
+            return false;
+
+        });
+    });
+
+</script>

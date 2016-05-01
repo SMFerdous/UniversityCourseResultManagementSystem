@@ -1,0 +1,314 @@
+﻿@model UniversityCourseResultManagementSystem.Models.EnrollCourse
+
+@{
+    ViewBag.Title = "ViewResult";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+<html>
+<h2>View Result</h2>
+<head>
+    <title></title>
+    <style type="text/css">
+        .buttonstyle {
+            background:darkgrey;
+            background-position: 0px -401px;
+            border: solid 1px #000000;
+            color: #ffffff;            
+            height: 21px;
+            margin-top: -1px;
+            padding-bottom: 2px;
+        }
+        .RTable {
+            
+        }
+
+        /*.buttonstyle:hover {
+                    background: white;
+                    background-position: 0px -501px;
+                    color: #000000;
+                }*/
+    </style>
+    <style>
+        .button {
+            background-color: white;
+            color: black;
+            font-style: italic;
+            font-weight: bold;
+            border: 1px solid gray;
+            text-align: center;
+            padding: 5px 5px;
+            margin: 4px 2px;
+            text-decoration: none;
+            float: right;
+            cursor: pointer;
+        }
+    </style>
+    <script type="text/javascript" src="http://jqueryjs.googlecode.com/files/jquery-1.3.1.min.js"> </script>
+    <script type="text/javascript">
+
+
+        function PrintElem(elem) {
+            Popup($(elem).html());
+
+        }
+
+        function Popup(data) {
+            var mywindow = window.open('', 'my div', 'height=700,width=900');
+            mywindow.document.write('<html><head><title>Result Sheet</title>');
+
+            /*optional stylesheet*/ //mywindow.document.write('<link rel="stylesheet" href="main.css" type="text/css" />');
+            mywindow.document.write('</head><body >');
+            mywindow.document.write(data);
+            mywindow.document.write('</body></html>');
+            mywindow.document.close(); // necessary for IE >= 10
+            mywindow.focus(); // necessary for IE >= 10
+            mywindow.print();
+            mywindow.close();
+
+            return true;
+        }
+    </script>
+</head>
+<body>
+    <div id="mydiv">
+        @using (Html.BeginForm())
+        {
+            @Html.AntiForgeryToken()
+
+
+            <div class="form-horizontal">
+                <h4></h4>
+                <hr />
+                @Html.ValidationSummary(true)
+                @*model => model.RegistrationId,*@
+                <div class="form-group">
+                   @Html.LabelFor(model => model.RegistrationId, "Reg No.", new { @class = "control-label col-md-2", @id = "regLab" })
+                    <div class="col-md-10">
+                        @*@Html.EditorFor(model => model.RegistrationId)*@
+                        <select name="RegistrationId" id="RegistrationId">
+                            <option value=""></option>
+                            @foreach (var student in ViewBag.StudentList)
+                            {
+                                <option value="@student.RegistrationId">@student.RegistrationId</option>
+                            }
+
+                        </select>
+                        @*@Html.ValidationMessageFor(model => model.RegistrationId)*@
+                    </div>
+                </div>
+                <div class="form-group" id="a2">
+                    @Html.Label("Name", new { @class = "control-label col-md-2" })
+                    @*@Html.LabelFor(model => model.TakenCredit, new { @class = "control-label col-md-2" })*@
+                    <div class="col-md-10">
+                        <input type="text" name="name" id="name" readonly="" />
+
+
+                    </div>
+                </div>
+
+                <div class="form-group" id="a3">
+                    @Html.Label("Email", new { @class = "control-label col-md-2" })
+                    @*@Html.LabelFor(model => model.TakenCredit, new { @class = "control-label col-md-2" })*@
+                    <div class="col-md-10">
+                        <input type="text" name="email" id="email" readonly="" />
+
+                    </div>
+                </div>
+
+
+
+                <div class="form-group" id="a4">
+                    @Html.Label("Department", new { @class = "control-label col-md-2" })
+                    @*@Html.LabelFor(model => model.TakenCredit, new { @class = "control-label col-md-2" })*@
+                    <div class="col-md-10">
+                        <input type="text" name="department" id="department" readonly="" />
+                    </div>
+                </div>
+
+                <table class="table" id="RTable">
+                    <tr>
+                        <th><label style="width: 150px;text-align: right;padding-right: 5px;font-size: 16px;">Student Name</label></th>
+                        <th> <input id="studentName" class="buttonstyle" type="button" style="width: 200px; padding: 2px 4px; height: 25px; font-size: 14px;" readonly="" /></th>
+
+                    </tr>
+                    <tr>
+                        <th><label style="width: 150px;text-align: right;padding-right: 5px;font-size: 16px;">RegNo</label></th>
+                        <th> <input id="studentRegNo" class="buttonstyle" type="button" style="width: 200px; padding: 2px 4px; height: 25px; font-size: 14px;" readonly="" /></th>
+
+                    </tr>
+                    <tr>
+                        <th><label style="width: 150px;text-align: right;padding-right: 5px;font-size: 16px;">Email</label></th>
+                        <th> <input id="studentEmail" class="buttonstyle" type="button" style="width: 200px; padding: 2px 4px; height: 25px; font-size: 14px;" readonly="" /></th>
+
+                    </tr>
+                    <tr>
+                        <th><label style="width: 150px;text-align: right;padding-right: 5px;font-size: 16px;">Department</label></th>
+                        <th> <input id="studentDepartment" class="buttonstyle" type="button" style="width: 200px; padding: 2px 4px; height: 25px; font-size: 14px;" readonly="" /></th>
+
+                    </tr>
+
+                </table>
+
+
+
+            </div>
+            <div class="form-group">
+                <div class="col-md-offset-2 col-md-10">
+                    @*<input type="submit" id="Submit" name="Submit" value="Make PDF" class="btn btn-default" />*@
+                    @*<a href="@Url.Action("MakePdf", "EnrollCourse")" class="button">Make PDF</a>*@
+                    @*<input type="button" id="btnPrint" value="Pdf/Print" />*@
+                    @*@Html.Action("MakePdf", "EnrollCourse","Make PDF");*@
+                    @*<input type="button" value="MakePDF/Print" id="button" onclick="PrintElem('#mydiv')" />*@
+                    <input type="button" value="MakePDF/Print" id="button" onclick="PrintElem('#mydiv')" />
+                    <br>
+                    <br>
+                </div>
+            </div>
+
+
+
+            @*<div>
+                      @Html.ActionLink("Back to List", "Index", new { id = item.EnrollCourseId })
+                </div>*@
+            <div id="UpdatePanel">
+
+
+
+            </div>
+
+        }
+
+    </div>
+</body>
+</html>
+<script src="~/Scripts/jquery-2.2.0.js"></script>
+
+<script>
+    $(document).ready(function () {
+        //$("#a1").hide();
+        //$("#a2").hide();
+        //$("#a3").hide();
+        //$("#a4").hide();
+        $("#RTable").hide();
+        $("#ResultTable").hide();
+        $("#ResultTablePdf").hide();
+        $("#RegistrationId").change(function () {
+            var regNo = $("#RegistrationId").val();
+            var jsnFormatData = { regNo: regNo };
+
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("GetStudentById","EnrollCourse")',
+                contentType: "application/json; charset=utf-8",
+                data: JSON.stringify(jsnFormatData),
+                dataType: "json",
+                success: function (data) {
+                    $.each(data, function (key, value) {
+
+                        $("#name").val(value.StudentName);
+                        $("#email").val(value.Email);
+                        $("#department").val(value.d.DeptCode);
+
+
+                        $("#studentName").val(value.StudentName);
+                        $("#studentRegNo").val(value.RegistrationId);
+                        $("#studentEmail").val(value.Email);
+                        $("#studentDepartment").val(value.d.DeptCode);
+
+                        var jsnData = { regNo: regNo };
+                        //alert(deptCode);
+                        $.ajax({
+                            type: "POST",
+                            url: '@Url.Action("GetCoursesbyRegNo","EnrollCourse")',
+                            contentType: "application/json; charset=utf-8",
+                            data: JSON.stringify(jsnData),
+                            dataType: "json",
+                            success: function (dataa) {
+                                var table = $('<table id="ResultTable" class="table">');
+
+                                var thead = $('<thead></thead>');
+                                //var info = $('<div id = "ResultPdf" class="col-md-offset-2 col-md-10" ');
+
+                                thead.append('<th>Course Code</th>');
+                                //theadPdf.append('<th>Course Code</th>');
+                                thead.append('<th>Name</th>');
+                                //theadPdf.append('<th>Name</th>');
+                                thead.append('<th>Grade</th>');
+                                //thead.append('<th>Name</th>');
+                                //thead.append('<th>Reg No.</th>');
+                                //thead.append('<th>Email</th>');
+                                //thead.append('<th>Department</th>');
+                                //theadPdf.append('<th>Grade</th>');
+                                thead.css('background-color', ' royalblue');
+                                table.append(thead);
+                                //tablePdf.append(theadPdf);
+                                var tablePdf = $('<table id="ResultTablePdf" class="tablePdf"> style="border:2px solid #cccccc"');
+                                var theadPdf = $('<thead></thead>');
+                                theadPdf.append('<th>Sudent Name</th>');
+                                theadPdf.append('<th>Reg No.</th>');
+                                theadPdf.append('<th>Email</th>');
+                                theadPdf.append('<th>Department</th>');
+
+
+
+                                $.each(dataa, function (key2, value2) {
+                                    var trow = $('<tr></tr>');
+                                    var trowPdf = $('<tr></tr>');
+                                    var gread = value2.GradeName;
+
+                                    if (gread == null) gread = 'Not Graded Yet';
+                                    trow.append('<td>' + value2.Course.CourseCode + '</td>');
+                                    //trowPdf.append('<td>' + value2.Course.CourseCode + '</td>');
+                                    trow.append('<td>' + value2.Course.CourseName + '</td>');
+                                    //trowPdf.append('<td>' + value2.Course.CourseName + '</td>');
+                                    trow.append('<td>' + gread + '</td>');
+                                    //trow.append('<td>' + value2.studentName + '</td>');
+                                    //trow.append('<td>' + value2.studentRegNo + '</td>');
+                                    //trow.append('<td>' + value2.studentEmail + '</td>');
+                                    //trow.append('<td>' + value2.studentDepartment + '</td>');
+                                    //trowPdf.append('<td>' + gread + '</td>');
+                                    table.append(trow);
+                                    //tablePdf.append(trowPdf);
+                                    // $("#CourseTable thead").after('<tr><td>' + value2.Course.CourseCode + '</td><td>' + value2.Course.CourseName + '</td><td>' + value2.GradeName + '</td></tr>');
+                                });
+                                $("tr:odd", table).css('background-color', ' lightblue');
+                                //$("tr:odd", tablePdf).css('background-color', '#F0F0F0');
+                                $("tr:even", table).css('background-color', ' lavender');
+                                //$("tr:even", tablePdf).css('background-color', '#ffffff');
+                                $("#UpdatePanel").html(table);
+                                //$("#UpdatePanelPdf").html(tablePdf);
+
+                                //document.getElementById("studentName").innerHTML = value.StudentName;
+                                //document.getElementById("studentRegNo").innerHTML = regNo;
+                                //document.getElementById("studentEmail").innerHTML = value.Email;
+                                //document.getElementById("studentDepartment").innerHTML = value.d.DeptCode;
+
+                                $("#RTable").show();
+
+                                //$("#a1").show();
+                                //$("#a2").show();
+                                //$("#a3").show();
+                                //$("#a4").show();
+                                $("#regLab").hide();
+                                $("#a2").hide();
+                                $("#a3").hide();
+                                $("#a4").hide();
+
+                            }
+                        });
+                    });
+                }
+            });
+
+            return false;
+        });
+
+
+
+
+
+    });
+
+</script>

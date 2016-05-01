@@ -1,0 +1,79 @@
+﻿@model UniversityCourseResultManagementSystem.Models.RoomAllocation
+
+<h2>Class Schedule and Room Allocation</h2>
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+        @Html.LabelFor(model => model.DepartmentId, "Department", new { @class = "control-label col-md-2" })
+<div class="col-md-10">
+    @*@Html.DropDownList("DepartmentId", String.Empty)
+                @Html.ValidationMessageFor(model => model.DepartmentId)*@
+    <select name="DepartmentId" id="DepartmentId" style="background: #E9EAED; width: 120px; text-align: center;">
+        <option value=0></option>
+                @foreach (var department in ViewBag.departments)
+        {
+            <option value= @department.DepartmentId >@department.DeptName</option>
+        }
+    
+    </select><label id="DeptErrorLabel" style="color: red;"></label>
+</div>
+    <label id="messageLabel" style="color: sienna; font-weight: normal; font-size: 20px;"></label>
+    <div id="UpdatePanel">
+ 
+    </div>
+}
+
+<script src="~/Scripts/jquery-2.2.0.js"></script>
+<script>
+    $(document).ready(function() {
+        //$("#CourseTable").hide();
+        $("#DepartmentId").change(function() {
+            var deptId = $("#DepartmentId").val();
+            $("#messageLabel").text("");
+            var jsnFormatData = { deptId: deptId };
+
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("GetClassScheduleInfo", "RoomAllocation")',
+                contentType: "application/json; charset=utf-8",
+                data: JSON.stringify(jsnFormatData),
+                dataType: "json",
+                success: function (dataa) {
+                    var tab = $('<table id="CourseTable" class="table">');
+                    var thead = $('<thead style="line-height: 30px; color: #ffffff; font-weight: normal; font-size: 16px;"></thead>');
+                    thead.append('<th style="text-align: center; border-right: 1px solid #ffffff;">Course Code</th>');
+                    thead.append('<th style="text-align: center; border-right: 1px solid #ffffff;">Name</th>');
+                    thead.append('<th style="text-align: center; border-right: 1px solid #ffffff;">Schedule Info</th>');
+                   
+                    thead.css('background-color', ' blue');
+                    tab.append(thead);
+
+                    var tablerow = false;
+                    $("#UpdatePanel").show();
+                    $.each(dataa, function (key2, value2) {
+                        var trow = $('<tr></tr>');
+                        var gread = value2.GradeName;
+                        if (gread == null) gread = 'Not Graded Yet';
+                        trow.append('<td style="text-align: center; border-right: 1px solid #ffffff;">' + value2.CourseCode + '</td>');
+                        trow.append('<td style="text-align: center; border-right: 1px solid #ffffff;">' + value2.CourseName + '</td>');
+                        trow.append('<td style="text-align: center; border-right: 1px solid #ffffff;">' + value2.Schedule + '</td>');
+                        tab.append(trow);
+                        tablerow = true;
+                    });
+                    
+                    $("tr:odd", tab).css('background-color', '#F5F5F5');
+                    $("tr:even", tab).css('background-color', '#EEEEEE');
+                    $("#UpdatePanel").html(tab);
+                    if (tablerow === false) {
+                        $("#UpdatePanel").hide();
+                        if(deptId !== 0)
+                        $("#messageLabel").text("No Courses are Available in this Department.");
+                    }
+                    
+                }
+            });
+            return false;
+        });
+    });
+</script>

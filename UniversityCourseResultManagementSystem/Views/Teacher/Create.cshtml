@@ -1,0 +1,110 @@
+﻿@model UniversityCourseResultManagementSystem.Models.Teacher
+
+@{
+    ViewBag.Title = "Create";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Save Teacher</h2>
+
+
+@using (Html.BeginForm()) 
+{
+    @Html.AntiForgeryToken()
+    
+    <div class="form-horizontal">
+        <h4></h4>
+        <hr />
+        
+        @Html.ValidationSummary(true)
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.TeacherName, new { @class = "control-label col-md-2" })
+            @*<label class="control-label col-md-2">Name</label>*@
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.TeacherName)
+                @Html.ValidationMessageFor(model => model.TeacherName)
+            </div>
+        </div>
+
+        <div class="form-group">
+             @Html.LabelFor(model => model.Address, new { @class = "control-label col-md-2" })
+           
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Address)
+                @Html.ValidationMessageFor(model => model.Address)
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Email, new { @class = "control-label col-md-2" })
+         
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Email)
+                @Html.ValidationMessageFor(model => model.Email)
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.ContactNo, new { @class = "control-label col-md-2" })
+         
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.ContactNo)
+                @Html.ValidationMessageFor(model => model.ContactNo)
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.DesignationId, "Designation", new { @class = "control-label col-md-2" })
+           
+            <div class="col-md-10">
+                @Html.DropDownList("DesignationId", String.Empty)
+                @Html.ValidationMessageFor(model => model.DesignationId)
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.DepartmentId, "Department", new { @class = "control-label col-md-2" })
+           
+            <div class="col-md-10">
+                @Html.DropDownList("DepartmentId", String.Empty)
+                @Html.ValidationMessageFor(model => model.DepartmentId)
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.TakenCredit, new { @class = "control-label col-md-2" })
+           
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.TakenCredit)
+                @Html.ValidationMessageFor(model => model.TakenCredit)
+            </div>
+        </div>
+        @*show Successfull message*@
+        @if (ViewData["Error"] != null)
+        {
+            <div class="red" style="color:red;">
+                <p><strong>@ViewData["Error"].ToString()</strong> </p>
+            </div>
+        }
+        @if (TempData["Success"] != null)
+        {
+            <div class="green" style="color:Green;">
+                <p><strong>@TempData["Success"].ToString()</strong> </p>
+            </div>
+        }
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Save" class="btn btn-default" />
+            </div>
+        </div>
+    </div>
+}
+
+<div>
+    @*@Html.ActionLink("Back to List", "Index")*@
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

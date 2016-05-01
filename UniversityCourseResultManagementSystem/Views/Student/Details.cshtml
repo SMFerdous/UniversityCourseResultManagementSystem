@@ -1,0 +1,93 @@
+﻿@model UniversityCourseResultManagementSystem.Models.Student
+
+@{
+    ViewBag.Title = "Details";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Details</h2>
+
+<div>
+    <h4>Student</h4>
+    <hr />
+    @*show Successfull message*@
+    @if (ViewData["Error"] != null)
+    {
+        <div class="red" style="color:red;">
+            <p><strong>@ViewData["Error"].ToString()</strong> </p>
+        </div>
+    }
+    @if (TempData["Success"] != null)
+    {
+        <div class="green" style="color:Green;">
+            <p><strong>@TempData["Success"].ToString()</strong> </p>
+        </div>
+    }
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.StudentName)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.StudentName)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.RegistrationId)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.RegistrationId)
+        </dd>
+        <dt>
+            @*@Html.DisplayNameFor(model => model.d.DeptCode)*@
+            @Html.Label("Department")
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.d.DeptCode)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Email)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Email)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.ContactNo)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.ContactNo)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Date)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Date)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Address)
+        </dt>
+        
+        <dd>
+            @Html.DisplayFor(model => model.Address)
+        </dd>
+        <br />
+        <br />
+        <dd>
+            <input type="button" value="Ok" onclick="location.href='@Url.Action("Create", "Student")'" />
+        </dd>
+       
+    </dl>
+   
+</div>
+<p>
+    @*@Html.ActionLink("Edit", "Edit", new { id = Model.StudentId }) |
+    @Html.ActionLink("Back to List", "Index")*@
+</p>

@@ -1,0 +1,45 @@
+﻿@model UniversityCourseResultManagementSystem.Models.RoomAllocation
+
+
+
+
+<h2>Unassign Courses</h2>
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+    <div class="form-group" style="text-align: center">
+    <input type="button" value="Unallocate All Rooms" id="UnallocateRooms" class="btn btn-lg" />
+    </div>
+}
+<script src="~/Scripts/jquery-2.2.0.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $("#UnallocateRooms").click(function () {
+
+            var r = confirm("Are you sure to unallocate all classrooms info?");
+            if (r == true) {
+
+                var jsnFormatData = { name: r};
+                $.ajax({
+                    type: "POST",
+                    url: '@Url.Action("UnallocateAllRooms", "RoomAllocation")',
+                    contentType: "application/json; charset=utf-8",
+                    data: JSON.stringify(jsnFormatData),
+                    dataType: "json",
+                    success: function (data) {
+
+                        if (data == true) {
+                            alert("All rooms unallocated successffully!");
+                        } else {
+                            alert("No rooms are available to unallocate");
+                        }
+                    }
+                });
+
+            }
+            return false;
+
+        });
+    });
+
+</script>

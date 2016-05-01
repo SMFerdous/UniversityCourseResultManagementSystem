@@ -1,0 +1,179 @@
+﻿@model UniversityCourseResultManagementSystem.Models.EnrollCourse
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-horizontal">
+        <h4>Save Student Result</h4>
+        <hr />
+        @Html.ValidationSummary(true)
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.RegistrationId,"Reg No.", new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @*@Html.EditorFor(model => model.RegistrationId)*@
+                <select name="RegistrationId" id="RegistrationId">
+                    <option value=""></option>
+                    @foreach (var student in ViewBag.StudentList)
+                    {
+                        <option value="@student.RegistrationId">@student.RegistrationId</option>
+                    }
+
+                </select>
+                @Html.ValidationMessageFor(model => model.RegistrationId)
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.Label("Name", new { @class = "control-label col-md-2" })
+            @*@Html.LabelFor(model => model.TakenCredit, new { @class = "control-label col-md-2" })*@
+            <div class="col-md-10">
+                <input type="text" name="name" id="name" readonly="" />
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.Label("Email", new { @class = "control-label col-md-2" })
+            @*@Html.LabelFor(model => model.TakenCredit, new { @class = "control-label col-md-2" })*@
+            <div class="col-md-10">
+                <input type="text" name="email" id="email" readonly="" />
+            </div>
+        </div>
+
+
+        
+        <div class="form-group">
+            @Html.Label("Department", new { @class = "control-label col-md-2" })
+            @*@Html.LabelFor(model => model.TakenCredit, new { @class = "control-label col-md-2" })*@
+            <div class="col-md-10">
+                <input type="text" name="department" id="department" readonly="" />
+            </div>
+        </div>
+        <div class="form-group">
+            @*@Html.LabelFor(model => model.CourseId, "CourseId", new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.DropDownList("CourseId", String.Empty)
+                    @Html.ValidationMessageFor(model => model.CourseId)
+                </div>*@
+            
+            @Html.Label("Course", new { @class = "control-label col-md-2" })
+            @*@Html.LabelFor(model => model.TakenCredit, new { @class = "control-label col-md-2" })*@
+            <div class="col-md-10">
+                <select name="CourseId" id="CourseId">
+                    <option value=""></option>
+                </select>
+               
+            </div>
+    
+            
+        </div>
+        <div class="form-group">
+            @Html.Label("Select Grade Letter", new { @class = "control-label col-md-2" })
+            @*@Html.LabelFor(model => model.TakenCredit, new { @class = "control-label col-md-2" })*@
+            <div class="col-md-10">
+                <select name="GradeName" id="GradeName">
+                    <option value=""></option>
+                    @foreach (var grade in ViewBag.GradeList)
+                    {
+                        <option value=@grade.GradeName>@grade.GradeName</option>
+                    }
+
+                </select>
+            </div>
+        </div>
+
+            <div class="form-group">
+                <div class="col-md-offset-2 col-md-10">
+                    <input type="submit" id="Submit" name="Submit" value="Save" class="btn btn-default" />
+                </div>
+            </div>
+        </div>
+}
+
+<script src="~/Scripts/jquery-2.2.0.js"></script>
+<script>
+    $(document).ready(function() {
+
+         $("#RegistrationId").change(function() {
+             var regNo = $("#RegistrationId").val();
+             var jsnFormatData = { regNo: regNo };
+
+             $.ajax({
+                 type: "POST",
+                 url: '@Url.Action("GetStudentById","EnrollCourse")',
+                 contentType: "application/json; charset=utf-8",
+                 data: JSON.stringify(jsnFormatData),
+                 dataType:"json",
+                 success: function (data) {
+                     $.each(data, function (key, value) {
+
+                         $("#name").val(value.StudentName);
+                         $("#email").val(value.Email);
+                         $("#department").val(value.d.DeptCode);
+
+                         
+                         $("#CourseId").empty();
+                         $("#CourseId").append('<option value=' +""+ '>' +""+ '</option>');
+                         var jsnData = { regNo: regNo };
+                         $.ajax({
+                             type: "POST",
+                             url: '@Url.Action("GetCoursesbyRegNo","EnrollCourse")',
+                             contentType: "application/json; charset=utf-8",
+                             data: JSON.stringify(jsnData),
+                             dataType: "json",
+                             success: function (dataa) {
+                                 $.each(dataa, function (key1, value1) {
+                                     //alert(value1.CourseId + " " + value1.CourseCode);
+                                     $("#CourseId").append('<option value=' + value1.CourseId + '>' + value1.Course.CourseCode + '</option>');
+                                 });
+                             }
+                         });
+                     });
+                 }
+             });
+
+             return false;
+         });
+        $("#Submit").click(function () {
+            var regNo = $("#RegistrationId").val();
+            if (regNo === "") {
+                alert("Select Your Registration No");
+                return false;
+            }
+
+            var courseId = $("#CourseId").val();
+            if (courseId === "") {
+                alert("Select Course");
+                return false;
+            }
+
+            var grd = $("#GradeName").val();
+            if (grd === "") {
+                alert("Select Grade");
+                return false;
+            }
+
+            //alert(courseId);
+           
+            var jsnFormatData = { RegistrationId: regNo, CourseId: courseId, GradeName: grd};
+                        $.ajax({
+                            type: "POST",
+                            url: '@Url.Action("EnrollCoursetoStudent","EnrollCourse")',
+                            contentType: "application/json; charset=utf-8",
+                            data: JSON.stringify(jsnFormatData),
+                            dataType: "json",
+                            success: function (data) {
+                                alert("Result Saved Successfully!");
+                                $("#RegistrationId").prop("selectedIndex", 0);
+                                $("#name").val("");
+                                $("#email").val("");
+                                $("#department").val("");
+                                $("#CourseId").empty();
+                                $("#GradeName").prop("selectedIndex", 0);
+                            }
+                            
+                        });
+                        return false;  
+            });
+    });
+</script>
+
